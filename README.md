@@ -1,48 +1,66 @@
-## Battery Anomaly Detection
-This project involves a pipeline for detecting anomalies in battery data.
 
-The pipeline includes several steps:
+# 🔋 Battery Anomaly Detection
+This project implements a pipeline for detecting anomalies in battery data. The pipeline encompasses data preprocessing, model training, and evaluation, utilizing tools like MLflow for experiment tracking, Airflow for orchestration, and Power BI for visualization.
 
-- Data preprocessing such as stratified sampling, visualization of voltage trends, and correlation matrix generation.
-- Outlier removal to clean and transform the data, enhancing model accuracy.
-- Modeling using various regression models (Random Forest, XGBoost, Decision Tree, and Linear Regression) and logging evaluation metrics such as MSE, RMSE, R², and Adjusted R².
+## 🚀 Project Overview
+The battery anomaly detection pipeline includes the following steps:
 
-**MLflow** is used to log results (parameters, metrics, and artifacts), and **Airflow** handles orchestration. Final results are visualized using **Power BI**.
+- Data Preprocessing: Stratified sampling, voltage trend visualization, and correlation matrix generation.
+
+- Outlier Removal: Cleaning and transforming data to enhance model accuracy.
+
+- Modeling: Training various regression models (Random Forest, XGBoost, Decision Tree, and Linear Regression) and logging evaluation metrics such as MSE, RMSE, R², and Adjusted R².
+
+- Experiment Tracking: Using MLflow to log results, including parameters, metrics, and artifacts.
+
+- Orchestration: Employing Airflow for workflow management.
+
+- Visualization: Displaying results using Power BI.
+
 
 ### 1.0 Project Structure
+```arduino
+Battery_Anomaly_Detection/
+├── data/                                  # Contains links or references to raw data
+│   └── README.md                          # Information or link to download dataset
+│
+├── results/                               # Model outputs and visualizations
+│   ├── figures/                           # Visualizations and plots
+│   └── battery_anomaly_detection.pbix     # Power BI report file
+│
+├── src/                                   # Source code and pipeline logic
+│   ├── dags/                              # Airflow DAG definitions
+│   │   └── battery_pipeline_dag.py        # Main pipeline DAG
+│   │
+│   ├── pipeline/                          # Core pipeline modules
+│   │   ├── __init__.py                    # Package initializer
+│   │   ├── preprocessing.py               # Data cleaning and transformation logic
+│   │   ├── data_loader.py                 # Data loading logic
+│   │   ├── utils.py                       # Utility functions
+│   │   ├── anomalies.py                   # Anomaly detection logic
+│   │   └── modeling.py                    # Model training and evaluation logic
+│   │
+│   ├── Dockerfile.airflow1                # Dockerfile for Airflow setup
+│   ├── Dockerfile.mlflow1                 # Dockerfile for MLflow setup
+│   └── docker-compose.yml                 # Docker Compose configuration for multi-container setup
+│
+├── Sphinx Documentation/                  # Project documentation
+│   ├── index.html                         # Entry point for generated HTML docs
+|   ├── genindex.html                      # Generated index of all the symbols
+│   ├── thesis.html                        # Custom thesis page 
+│   └── search.html                        # Search page for documentation
+│
+├── requirements.txt                       # Python dependencies
+├── README.md                              # Project overview and setup guide
 
-* `battery_anomaly_detection.pbix`: A Power BI Desktop file,for  visualization of the battery anomaly detection results.
-* `README.md`: This file, providing an overview of the project structure and its components.
-* `Sphinx Documentation/`: Contains the documentation for the project, generated using Sphinx. The main entry point is `Sphinx Documentation/build/index.html`.
-    * `build/`: The output directory of the Sphinx build process, containing HTML files, static assets, and internal build information.
-    * `_sources/`: Contains the reStructuredText (`.rst`) and Jupyter Notebook (`.ipynb`) source files for the documentation.
-    * `_static/`: Includes CSS, JavaScript, and image files used to style the documentation.
-* `thesis/`: Contains the core project files, including data, code, and orchestration configurations.
-    * `case_study.csv`: The primary dataset used for analysis and model training.
-    * `docker-compose.yml`: A Docker Compose file to define and manage multi-container Docker applications, likely including Airflow and MLflow.
-    * `Dockerfile.airflow1`: A Dockerfile used to build a Docker image for Apache Airflow.
-    * `Dockerfile.mlflow1`: A Dockerfile used to build a Docker image for MLflow.
-    * `requirements.txt`: Lists the Python packages required to run the project.
-    * `airflow_db/`: Contains files related to the Apache Airflow setup.
-        * `airflow.cfg`: The main configuration file for Airflow.
-        * `airflow.db`: The metadata database used by Airflow.
-        * `dags/`: Directory for storing Airflow DAGs (Directed Acyclic Graphs), which define the project's workflows.
-        * `logs/`: Contains logs generated by Airflow task executions.
-        * `outputs/`: Output files generated within the Airflow environment.
-        * `pipeline/`: Likely a copy or link to the main `thesis/pipeline` directory used within the Airflow context.
-    * `outputs/`: Contains output files generated by the analysis pipelines, such as metrics, correlation matrices, and time series visualizations.
-    * `pipeline/`: Contains the Python modules implementing the battery anomaly detection pipeline.
-        * `anomalies.py`: Code for anomaly detection and removal models ( Isolation Forest, Z-score).
-        * `data_loader.py`: Functions to load and handle the battery data.
-        * `modeling.py`: Implementation of machine learning models used in the project.
-        * `preprocessing.py`: Functions for checking null values and time series analysis.
-        * `utils.py`: Utility functions contains helper functions used across the pipeline.
-        * `__init__.py`: Marks the directory as a Python package.
+
+
+```
 
 ### 2.0 How to run the code
 In this section we will understand how to run the code.
 ### 2.1 Prerequisites
-All required Python libraries and their specific versions are listed in `thesis/requirements.txt`.
+All required Python libraries and their specific versions are listed in `requirements.txt`.
 
 Before you run this project, ensure you have the following installed:
 
@@ -53,53 +71,57 @@ Before you run this project, ensure you have the following installed:
 
 
 ### 2.2 Running the Project with Airflow
-This project uses Apache Airflow for orchestrating the tasks. It is packaged using Docker for containerized execution. You can easily start and run Airflow locally using Docker Compose.
-1. **Install Dependencies**  
+This project uses Apache Airflow for orchestrating the tasks. It is packaged using Docker for containerized execution. You can easily start and run Airflow locally using Docker Compose. **
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SonalRajendra/Battery_Anomaly_Detection.git
+   cd Battery_Anomaly_Detection
+   ```
+
+2. **Install Dependencies**  
    Open a command prompt (or terminal) in your project folder and run:
    ```bash
-   pip install -r thesis/requirements.txt
-2. **Start Docker**
+   pip install -r requirements.txt
+3. **Start Docker**
 
    Make sure Docker is running on your system
-3. **Open Command Prompt**
+4. **Open Command Prompt**
 
-    Navigate to the thesis directory within the (SonalPalrecha_data_science_case_study2025)
+    Navigate to the src directory 
     ```bash
-    cd path/to/SonalPalrecha_data_science_case_study2025/thesis
-4. **Run Airflow**
+    cd src
+5. **Run Airflow**
 
-    - Start the Airflow services using Docker Compose. From the project directory(SonalPalrecha_data_science_case_study2025\thesis), run:
+    - Start the Airflow services using Docker Compose. From the src directory, run:
     ```bash
     docker-compose up
     ```
     This command will start all Docker containers, including those for Airflow and MLflow.
-5. **Verify Docker Containers**
+6. **Verify Docker Containers**
 
      Open your Docker dashboard (e.g., Docker Desktop) to verify that the containers are running.
     Look for the container associated with the thesis project.
     Ensure that the Airflow container is running.
-6. **Access Airflow UI**
+7. **Access Airflow UI**
 
     Access the Airflow UI by navigating to `http://localhost:8080` in your browser.
      The default username is `admin1` and the default password is also `admin1`.
-7. **Trigger the DAG**
+8. **Trigger the DAG**
 
       Once you have logged into the Airflow UI, find the `battery_anomaly_detection_pipeline` DAG which you can trigger manually.
 
 ### 2.3 Access to MLflow
-    MLflow is used to log parameters, metrics, and artifacts. You can view the logged results in the MLflow UI, which is running as part of the Docker Compose setup.
-
-    Access the MLflow UI by navigating to  `http://127.0.0.1:5000` in your browser in new tab to view the experiment details and logs for each run.
-    
-    MLflow runs are logged under the experiment `Anomaly_Detection1`.
+  - MLflow is used to log parameters, metrics, and artifacts. You can view the logged results in the MLflow UI, which is running as part of the Docker Compose setup.
+  - Access the MLflow UI by navigating to 'http://127.0.0.1:5000' in your browser in new tab to view the experiment details and logs for each run.
+  - MLflow runs are logged under the experiment 'Anomaly_Detection1'.
 
 
 ### 2.4 How to generate results
 - After triggering the DAG in Airflow, the data_preprocessing task will execute, performing the preprocessing steps.
 - The task will log the parameters and results in MLflow.
-- The generated plots (voltage_trends_full, voltage_trend_downsampled, and correlation_matrix ) will be saved in the `thesis\outputs`.
-- After training various models (Random Forest, XGBoost, Decision Tree, Linear Regression) on both raw and clean data, a file named `combined_metrics.csv` is generated and saves in `thesis\outputs` which includes:Dataset type: [raw, clean], Evaluation metrics: [MSE, RMSE, R², Adjusted R²], Models: [Random Forest, XGBoost, Decision Tree, Linear Regression].
-    - This CSV is used in Power BI [`battery_anomaly_detection.pbix`] to create interactive visualizations comparing model performance across different datasets and metrics.
+- The generated plots (voltage_trends_full, voltage_trend_downsampled, and correlation_matrix ) are saved in results.
+- After training various models (Random Forest, XGBoost, Decision Tree, Linear Regression) on both raw and clean data, a file named `combined_metrics.csv` will be  generated, which includes:Dataset type: [raw, clean], Evaluation metrics: [MSE, RMSE, R², Adjusted R²], Models: [Random Forest, XGBoost, Decision Tree, Linear Regression].
+ - This CSV is used in Power BI [`battery_anomaly_detection.pbix`] to create interactive visualizations comparing model performance across different datasets and metrics.
 
 
 
