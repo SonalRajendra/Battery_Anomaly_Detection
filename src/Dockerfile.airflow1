@@ -1,0 +1,27 @@
+# This Dockerfile defines the setup for the Airflow container.
+# It starts with the official Airflow image and adds necessary dependencies
+# and your custom DAGs and pipeline code.
+
+# Use the official Apache Airflow image as the base image
+FROM apache/airflow:2.7.1-python3.10
+
+# Switch to the airflow user (already exists in base image)
+USER airflow
+
+# Copy the requirements.txt into the container
+COPY requirements.txt /requirements.txt
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r /requirements.txt
+
+# Set the working directory
+WORKDIR /opt/airflow
+
+# Copy DAGs and pipeline code into the container
+COPY dags /opt/airflow/dags
+COPY pipeline /opt/airflow/pipeline
+
+# Command to run when the container starts
+CMD ["airflow", "webserver"]
+
+

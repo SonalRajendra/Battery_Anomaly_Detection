@@ -1,0 +1,50 @@
+version: '3.8'
+
+# This Docker Compose file sets up an Airflow instance and an MLflow tracking server.
+# Airflow is used for orchestrating data pipelines, and MLflow is used for tracking
+# machine learning experiments.
+
+
+services:
+  # Airflow Service
+  airflow1:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow1
+    container_name: airflow1
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - PYTHONPATH=/opt/airflow 
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./pipeline:/opt/airflow/pipeline
+      - ./requirements.txt:/requirements.txt
+      - ./case_study.csv:/opt/airflow/case_study.csv
+      - ./outputs:/opt/airflow/outputs
+      - ./airflow_db:/opt/airflow   
+    user: airflow
+    ports:
+    # Expose the Airflow webserver UI on port 8080 of your host
+      - "8080:8080"
+    depends_on:
+      - mlflow1
+    command: >
+        bash -c "airflow scheduler & exec airflow webserver"
+
+
+  # MLflow Service
+  mlflow1:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow1
+    container_name: mlflow1
+    environment:
+    # Set the tracking URI for MLflow to its own service address.
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+    ports:
+    # Expose the MLflow tracking server UI on port 5000 of your host.
+      - "5000:5000"

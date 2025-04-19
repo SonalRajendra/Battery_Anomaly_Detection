@@ -1,0 +1,19 @@
+# This Dockerfile sets up a container to run the MLflow tracking server.
+# Use the official Python 3.10 slim image as the base
+FROM python:3.10-slim
+
+# Set environment variables
+ENV MLFLOW_HOME /opt/mlflow
+WORKDIR $MLFLOW_HOME
+
+# Install required dependencies (git, etc.)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Install MLflow and any other dependencies
+RUN pip install --no-cache-dir mlflow
+
+# Expose port 5000 for MLflow's web UI
+EXPOSE 5000
+
+# Set the command to run MLflow
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
