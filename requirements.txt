@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+xgboost
+mlflow
+apache-airflow==2.7.1
