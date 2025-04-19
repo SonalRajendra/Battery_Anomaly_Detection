@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+
+<html lang="English" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BootStrapping (Stratified Sampling) &#8212; Sphinx_for_thesis - documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="_static/documentation_options.js?v=7b8c1a05"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Sphinx_for_thesis documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;/kaggle/input/upload-hoja/case_study_sample_dataset.csv&quot;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print all columns in the dataset</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Columns in dataset:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Columns in dataset:
+1. index
+2. test_time
+3. cycle_index
+4. cell_index
+5. voltage
+6. discharge_capacity
+7. current
+8. internal_resistance
+9. temperature
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>test_time</th>
+      <th>cycle_index</th>
+      <th>cell_index</th>
+      <th>voltage</th>
+      <th>discharge_capacity</th>
+      <th>current</th>
+      <th>internal_resistance</th>
+      <th>temperature</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>834355</td>
+      <td>1801.8327</td>
+      <td>0.0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.291040</td>
+      <td>0.000016</td>
+      <td>-0.450999</td>
+      <td>0.021151</td>
+      <td>29.973852</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>834356</td>
+      <td>1811.8329</td>
+      <td>0.0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.281339</td>
+      <td>0.001570</td>
+      <td>-0.559847</td>
+      <td>0.021151</td>
+      <td>30.012213</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>834357</td>
+      <td>1821.8363</td>
+      <td>0.0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.277671</td>
+      <td>0.003125</td>
+      <td>-0.559859</td>
+      <td>0.021151</td>
+      <td>29.995052</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>834358</td>
+      <td>1831.8373</td>
+      <td>0.0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.275081</td>
+      <td>0.004680</td>
+      <td>-0.559828</td>
+      <td>0.021151</td>
+      <td>29.981087</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>834359</td>
+      <td>1841.8468</td>
+      <td>0.0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.273016</td>
+      <td>0.006237</td>
+      <td>-0.559821</td>
+      <td>0.021151</td>
+      <td>30.000351</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<section id="BootStrapping-(Stratified-Sampling)">
+<h1>BootStrapping (Stratified Sampling)<a class="headerlink" href="#BootStrapping-(Stratified-Sampling)" title="Link to this heading">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedShuffleSplit</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assuming df is your dataframe</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;cycle_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cycle_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Ensure cycle_index is integer if needed</span>
+
+<span class="c1"># Define the stratified shuffle split</span>
+<span class="n">sss</span> <span class="o">=</span> <span class="n">StratifiedShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mi">50000</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Perform stratified sampling based on &#39;cycle_index&#39;</span>
+<span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">sample_idx</span> <span class="ow">in</span> <span class="n">sss</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cycle_index&#39;</span><span class="p">]):</span>
+    <span class="n">stratified_sample</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">sample_idx</span><span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stratified_sample</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>test_time</th>
+      <th>cycle_index</th>
+      <th>cell_index</th>
+      <th>voltage</th>
+      <th>discharge_capacity</th>
+      <th>current</th>
+      <th>internal_resistance</th>
+      <th>temperature</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>539746</th>
+      <td>1374101</td>
+      <td>118562.9294</td>
+      <td>642</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.440493</td>
+      <td>0.001232</td>
+      <td>-4.400011</td>
+      <td>0.017184</td>
+      <td>30.254847</td>
+    </tr>
+    <tr>
+      <th>1055535</th>
+      <td>1889890</td>
+      <td>250904.6582</td>
+      <td>319</td>
+      <td>2017-05-12_5_4C-50per_3C_CH14</td>
+      <td>2.001442</td>
+      <td>1.050119</td>
+      <td>-0.021974</td>
+      <td>0.016465</td>
+      <td>33.246590</td>
+    </tr>
+    <tr>
+      <th>1433961</th>
+      <td>3489128</td>
+      <td>96450.4372</td>
+      <td>393</td>
+      <td>2017-05-12_5_4C-70per_3C_CH17</td>
+      <td>3.121954</td>
+      <td>0.284840</td>
+      <td>-4.399859</td>
+      <td>0.016092</td>
+      <td>32.711956</td>
+    </tr>
+    <tr>
+      <th>835505</th>
+      <td>1669860</td>
+      <td>974.6715</td>
+      <td>0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH14</td>
+      <td>3.006754</td>
+      <td>0.586673</td>
+      <td>-0.110008</td>
+      <td>0.016836</td>
+      <td>30.081806</td>
+    </tr>
+    <tr>
+      <th>180427</th>
+      <td>1014782</td>
+      <td>977.0316</td>
+      <td>0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.000561</td>
+      <td>0.587068</td>
+      <td>-0.110012</td>
+      <td>0.017212</td>
+      <td>30.199120</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Detecting-Anomolies">
+<h1>Detecting Anomolies<a class="headerlink" href="#Detecting-Anomolies" title="Link to this heading">¶</a></h1>
+<section id="a)-Outlier-Detection-(Z-score-and-IQR-Method)">
+<h2>a) Outlier Detection (Z-score and IQR Method)<a class="headerlink" href="#a)-Outlier-Detection-(Z-score-and-IQR-Method)" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">zscore</span>
+
+<span class="c1"># Compute Z-score</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;z_score_voltage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zscore</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">])</span>
+
+<span class="c1"># Flag anomalies (z-score &gt; 3)</span>
+<span class="n">df_anomalies</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;z_score_voltage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Anomalous Voltage Points:&quot;</span><span class="p">,</span> <span class="n">df_anomalies</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># IQR Method for detecting outliers</span>
+<span class="n">Q1</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">Q3</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="n">IQR</span> <span class="o">=</span> <span class="n">Q3</span> <span class="o">-</span> <span class="n">Q1</span>
+
+<span class="n">outliers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">Q1</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">Q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">))]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Voltage Outliers:&quot;</span><span class="p">,</span> <span class="n">outliers</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Anomalous Voltage Points: (360, 10)
+Voltage Outliers: (335, 10)
+</pre></div></div>
+</div>
+</section>
+<section id="b)-Time-Series-Analysis">
+<h2>b) Time Series Analysis<a class="headerlink" href="#b)-Time-Series-Analysis" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot trends</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;test_time&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Test Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Voltage Trend Over Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_13_0.png" src="_images/thesis_13_0.png" />
+</div>
+</div>
+<p>The density of data points makes it difficult to observe finer trends.</p>
+</section>
+<section id="Analysing-in-a-Very-small-sample-of-5000-points">
+<h2>Analysing in a Very small sample of 5000 points<a class="headerlink" href="#Analysing-in-a-Very-small-sample-of-5000-points" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Select 5000 evenly spaced indices</span>
+<span class="n">sampled_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># Downsample the dataframe</span>
+<span class="n">df_downsampled</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">sampled_indices</span><span class="p">]</span>
+
+<span class="c1"># Plot the downsampled data</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df_downsampled</span><span class="p">[</span><span class="s1">&#39;test_time&#39;</span><span class="p">],</span> <span class="n">df_downsampled</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Test Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Downsampled Voltage Trend Over Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_15_0.png" src="_images/thesis_15_0.png" />
+</div>
+</div>
+<p>Initially, voltage is more clustered, but as test time progresses, there is a larger spread</p>
+<p><strong>Interpretation :</strong> The higher scatter density at initial timestamps and its reduction over time can be attributed to several possible reasons</p>
+</section>
+</section>
+<section id="Analysing-Trends">
+<h1>Analysing Trends<a class="headerlink" href="#Analysing-Trends" title="Link to this heading">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stratified_sample</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>test_time</th>
+      <th>cycle_index</th>
+      <th>cell_index</th>
+      <th>voltage</th>
+      <th>discharge_capacity</th>
+      <th>current</th>
+      <th>internal_resistance</th>
+      <th>temperature</th>
+      <th>anomaly_score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>539746</th>
+      <td>1374101</td>
+      <td>118562.9294</td>
+      <td>642</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.440493</td>
+      <td>0.001232</td>
+      <td>-4.400011</td>
+      <td>0.017184</td>
+      <td>30.254847</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1055535</th>
+      <td>1889890</td>
+      <td>250904.6582</td>
+      <td>319</td>
+      <td>2017-05-12_5_4C-50per_3C_CH14</td>
+      <td>2.001442</td>
+      <td>1.050119</td>
+      <td>-0.021974</td>
+      <td>0.016465</td>
+      <td>33.246590</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1433961</th>
+      <td>3489128</td>
+      <td>96450.4372</td>
+      <td>393</td>
+      <td>2017-05-12_5_4C-70per_3C_CH17</td>
+      <td>3.121954</td>
+      <td>0.284840</td>
+      <td>-4.399859</td>
+      <td>0.016092</td>
+      <td>32.711956</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>835505</th>
+      <td>1669860</td>
+      <td>974.6715</td>
+      <td>0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH14</td>
+      <td>3.006754</td>
+      <td>0.586673</td>
+      <td>-0.110008</td>
+      <td>0.016836</td>
+      <td>30.081806</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>180427</th>
+      <td>1014782</td>
+      <td>977.0316</td>
+      <td>0</td>
+      <td>2017-05-12_5_4C-50per_3C_CH13</td>
+      <td>3.000561</td>
+      <td>0.587068</td>
+      <td>-0.110012</td>
+      <td>0.017212</td>
+      <td>30.199120</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Compute correlation matrix</span>
+<span class="n">analysis_data</span> <span class="o">=</span> <span class="n">stratified_sample</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cell_index&#39;</span><span class="p">,</span> <span class="s1">&#39;anomaly_score&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;cycle_index&#39;</span><span class="p">])</span>
+<span class="n">correlation_matrix</span> <span class="o">=</span> <span class="n">analysis_data</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+
+<span class="c1"># Plot heatmap</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">correlation_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.2f&quot;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Correlation Matrix&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_19_0.png" src="_images/thesis_19_0.png" />
+</div>
+</div>
+<section id="Above-correlation-matrix-proves-this-is-not-a-Time-Series-data,-hence-we-can-ignore-time-stamps-for-rest-of-our-analysis">
+<h2>Above correlation matrix proves this is not a Time Series data, hence we can ignore time stamps for rest of our analysis<a class="headerlink" href="#Above-correlation-matrix-proves-this-is-not-a-Time-Series-data,-hence-we-can-ignore-time-stamps-for-rest-of-our-analysis" title="Link to this heading">¶</a></h2>
+</section>
+<section id="Pairwise-Relationship">
+<h2>Pairwise Relationship<a class="headerlink" href="#Pairwise-Relationship" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">stratified_sample</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]],</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_22_1.png" src="_images/thesis_22_1.png" />
+</div>
+</div>
+</section>
+<section id="we-can-do-same-on-a-very-small-dataset-of-1000-samples-for-better-visualization">
+<h2>we can do same on a very small dataset of 1000 samples for better visualization<a class="headerlink" href="#we-can-do-same-on-a-very-small-dataset-of-1000-samples-for-better-visualization" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Sample 1000 points from the stratified dataset</span>
+<span class="n">small_sample</span> <span class="o">=</span> <span class="n">stratified_sample</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Create a pairplot</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">small_sample</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]],</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_24_1.png" src="_images/thesis_24_1.png" />
+</div>
+</div>
+</section>
+<section id="Histograms">
+<h2>Histograms<a class="headerlink" href="#Histograms" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Define columns to visualize</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]</span>
+
+<span class="c1"># Set up the figure size</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># Loop through each column and create a histogram</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>  <span class="c1"># Create a 2x3 grid for subplots</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">stratified_sample</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Distribution of </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Adjust layout for better spacing</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_26_1.png" src="_images/thesis_26_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Improving-Data-Quality-with-Statistics-&amp;-Machine-Learning-Models">
+<h1>Improving Data Quality with Statistics &amp; Machine Learning Models<a class="headerlink" href="#Improving-Data-Quality-with-Statistics-&-Machine-Learning-Models" title="Link to this heading">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">stratified_sample</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+index                  0
+test_time              0
+cycle_index            0
+cell_index             0
+voltage                0
+discharge_capacity     0
+current                0
+internal_resistance    0
+temperature            0
+anomaly_score          0
+dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for missing values</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+index                  0
+test_time              0
+cycle_index            0
+cell_index             0
+voltage                0
+discharge_capacity     0
+current                0
+internal_resistance    0
+temperature            0
+z_score_voltage        0
+anomaly_score          0
+dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">stratified_sample</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+index                  0
+test_time              0
+cycle_index            0
+cell_index             0
+voltage                0
+discharge_capacity     0
+current                0
+internal_resistance    0
+temperature            0
+anomaly_score          0
+dtype: int64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for missing values</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+index                  0
+test_time              0
+cycle_index            0
+cell_index             0
+voltage                0
+discharge_capacity     0
+current                0
+internal_resistance    0
+temperature            0
+z_score_voltage        0
+anomaly_score          0
+dtype: int64
+</pre></div></div>
+</div>
+</section>
+<section id="Outlier-Removal">
+<h1>Outlier Removal<a class="headerlink" href="#Outlier-Removal" title="Link to this heading">¶</a></h1>
+<section id="Z-test">
+<h2>Z-test<a class="headerlink" href="#Z-test" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">zscore</span>
+
+<span class="c1"># Compute Z-scores</span>
+<span class="n">z_scores</span> <span class="o">=</span> <span class="n">zscore</span><span class="p">(</span><span class="n">stratified_sample</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]])</span>
+
+<span class="c1"># Define threshold (e.g., 3 standard deviations)</span>
+<span class="n">outlier_mask</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z_scores</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Remove outliers</span>
+<span class="n">stratified_sample_cleaned</span> <span class="o">=</span> <span class="n">stratified_sample</span><span class="p">[</span><span class="o">~</span><span class="n">outlier_mask</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<section id="Visualzing-Clean-data">
+<h3>Visualzing Clean data<a class="headerlink" href="#Visualzing-Clean-data" title="Link to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sample 1000 points from the Clean stratified dataset</span>
+<span class="n">small_sample</span> <span class="o">=</span> <span class="n">stratified_sample_cleaned</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Create a pairplot</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">small_sample</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]],</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_40_1.png" src="_images/thesis_40_1.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="Further-using-Isolation-Forest">
+<h1>Further using Isolation Forest<a class="headerlink" href="#Further-using-Isolation-Forest" title="Link to this heading">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">IsolationForest</span>
+
+<span class="n">iso_forest</span> <span class="o">=</span> <span class="n">IsolationForest</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">stratified_sample_cleaned</span><span class="p">[</span><span class="s1">&#39;anomaly&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">iso_forest</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">stratified_sample_cleaned</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]])</span>
+
+<span class="c1"># Keep only normal data</span>
+<span class="n">stratified_sample_cleaned</span> <span class="o">=</span> <span class="n">stratified_sample_cleaned</span><span class="p">[</span><span class="n">stratified_sample_cleaned</span><span class="p">[</span><span class="s1">&#39;anomaly&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/sklearn/base.py:439: UserWarning: X does not have valid feature names, but IsolationForest was fitted with feature names
+  warnings.warn(
+&lt;ipython-input-49-275213e12f9d&gt;:4: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  stratified_sample_cleaned[&#39;anomaly&#39;] = iso_forest.fit_predict(stratified_sample_cleaned[[&#39;voltage&#39;, &#39;discharge_capacity&#39;, &#39;current&#39;, &#39;internal_resistance&#39;, &#39;temperature&#39;]])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_sample</span> <span class="o">=</span> <span class="n">stratified_sample_cleaned</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">small_sample</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;discharge_capacity&#39;</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_resistance&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">]],</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+/usr/local/lib/python3.10/dist-packages/seaborn/_oldcore.py:1119: FutureWarning: use_inf_as_na option is deprecated and will be removed in a future version. Convert inf values to NaN before operating instead.
+  with pd.option_context(&#39;mode.use_inf_as_na&#39;, True):
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_43_1.png" src="_images/thesis_43_1.png" />
+</div>
+</div>
+</section>
+<section id="Modeling-Data-(Voltage-vs-Discharge-capacity)">
+<h1>Modeling Data (Voltage vs Discharge capacity)<a class="headerlink" href="#Modeling-Data-(Voltage-vs-Discharge-capacity)" title="Link to this heading">¶</a></h1>
+<section id="1.-Modeling-Uncleaned-Raw-data-(Produced-by-using-Stratified-Sampling)">
+<h2>1. Modeling Uncleaned Raw data (Produced by using Stratified Sampling)<a class="headerlink" href="#1.-Modeling-Uncleaned-Raw-data-(Produced-by-using-Stratified-Sampling)" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Machine-Learning-Models-Used-for-Fitting-the-Data">
+<h2>Machine Learning Models Used for Fitting the Data<a class="headerlink" href="#Machine-Learning-Models-Used-for-Fitting-the-Data" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Random Forest Regressor</strong></p></li>
+<li><p><strong>Linear Regression</strong></p></li>
+<li><p><strong>XGBoost Regressor</strong></p></li>
+<li><p><strong>Dense Neural Network (DNN)</strong></p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="Evaluation-Metrics">
+<h2>Evaluation Metrics<a class="headerlink" href="#Evaluation-Metrics" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><div class="line-block">
+<div class="line"><strong>Mean Squared Error (MSE)</strong></div>
+<div class="line">Measures the average squared difference between actual and predicted values. Lower values indicate better performance.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Root Mean Squared Error (RMSE)</strong></div>
+<div class="line">Square root of MSE, providing an interpretable error measurement in the same units as the target variable.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>R-squared (R²)</strong></div>
+<div class="line">Represents the proportion of variance in the target variable explained by the model. Higher values (closer to 1) indicate a better fit.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Adjusted R-squared</strong></div>
+<div class="line">Modified R² that accounts for the number of predictors, preventing overfitting when adding new features.</div>
+</div>
+</li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setting up Models</span>
+
+<span class="k">def</span> <span class="nf">adjusted_r2</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Adjusted R²&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">train_evaluate_models</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Training on </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Select features and target</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;voltage&#39;</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;discharge_capacity&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Split into train and test sets</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+    <span class="c1"># Dictionary to store results</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1">## **1. Random Forest Regressor**</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">rf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_pred_rf</span> <span class="o">=</span> <span class="n">rf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="c1">## **2. Linear Regression**</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_pred_lr</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="c1">## **3. XGBoost Regressor**</span>
+    <span class="n">xgb_model</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">(</span><span class="n">objective</span><span class="o">=</span><span class="s2">&quot;reg:squarederror&quot;</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">xgb_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_pred_xgb</span> <span class="o">=</span> <span class="n">xgb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="c1">## **4. Neural Network (3 Hidden Layers)**</span>
+    <span class="k">class</span> <span class="nc">NeuralNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">NeuralNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc4</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc4</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+    <span class="c1"># Convert data to tensors</span>
+    <span class="n">X_train_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">y_train_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">X_test_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">y_test_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># Define model, loss function, and optimizer</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">NeuralNet</span><span class="p">()</span>
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="c1"># Train Neural Network</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_train_tensor</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">y_train_tensor</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+    <span class="c1"># Evaluate Neural Network</span>
+    <span class="n">y_pred_nn</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_test_tensor</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1">## **Step 3: Compute Metrics for Each Model**</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Random Forest&quot;</span><span class="p">:</span> <span class="n">y_pred_rf</span><span class="p">,</span> <span class="s2">&quot;Linear Regression&quot;</span><span class="p">:</span> <span class="n">y_pred_lr</span><span class="p">,</span>
+              <span class="s2">&quot;XGBoost&quot;</span><span class="p">:</span> <span class="n">y_pred_xgb</span><span class="p">,</span> <span class="s2">&quot;Neural Network&quot;</span><span class="p">:</span> <span class="n">y_pred_nn</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">y_pred</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mse</span><span class="p">)</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">adj_r2</span> <span class="o">=</span> <span class="n">adjusted_r2</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MSE&quot;</span><span class="p">:</span> <span class="n">mse</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse</span><span class="p">,</span> <span class="s2">&quot;R2&quot;</span><span class="p">:</span> <span class="n">r2</span><span class="p">,</span> <span class="s2">&quot;Adjusted R2&quot;</span><span class="p">:</span> <span class="n">adj_r2</span><span class="p">}</span>
+
+    <span class="c1"># Print Results</span>
+    <span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">**</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2"> Performance:**&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train and evaluate models on stratified_sample</span>
+<span class="n">results_raw</span> <span class="o">=</span> <span class="n">train_evaluate_models</span><span class="p">(</span><span class="n">stratified_sample</span><span class="p">,</span> <span class="s2">&quot;Stratified Sample (Raw)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+--- Training on Stratified Sample (Raw) ---
+
+**Random Forest Performance:**
+MSE: 0.0323
+RMSE: 0.1798
+R2: 0.7283
+Adjusted R2: 0.7282
+
+**Linear Regression Performance:**
+MSE: 0.0407
+RMSE: 0.2016
+R2: 0.6583
+Adjusted R2: 0.6582
+
+**XGBoost Performance:**
+MSE: 0.0238
+RMSE: 0.1542
+R2: 0.8000
+Adjusted R2: 0.8000
+
+**Neural Network Performance:**
+MSE: 0.0294
+RMSE: 0.1714
+R2: 0.7530
+Adjusted R2: 0.7529
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train and evaluate models on stratified_sample_cleaned</span>
+<span class="n">results_cleaned</span> <span class="o">=</span> <span class="n">train_evaluate_models</span><span class="p">(</span><span class="n">stratified_sample_cleaned</span><span class="p">,</span> <span class="s2">&quot;Stratified Sample (Cleaned)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+--- Training on Stratified Sample (Cleaned) ---
+
+**Random Forest Performance:**
+MSE: 0.0195
+RMSE: 0.1396
+R2: 0.8137
+Adjusted R2: 0.8137
+
+**Linear Regression Performance:**
+MSE: 0.0301
+RMSE: 0.1736
+R2: 0.7117
+Adjusted R2: 0.7117
+
+**XGBoost Performance:**
+MSE: 0.0136
+RMSE: 0.1165
+R2: 0.8702
+Adjusted R2: 0.8702
+
+**Neural Network Performance:**
+MSE: 0.0302
+RMSE: 0.1738
+R2: 0.7112
+Adjusted R2: 0.7112
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="c1"># Convert results into DataFrame</span>
+<span class="k">def</span> <span class="nf">results_to_dataframe</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset_name</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="c1"># Convert results for both raw and cleaned data</span>
+<span class="n">df_results_raw</span> <span class="o">=</span> <span class="n">results_to_dataframe</span><span class="p">(</span><span class="n">results_raw</span><span class="p">,</span> <span class="s2">&quot;Raw Data&quot;</span><span class="p">)</span>
+<span class="n">df_results_cleaned</span> <span class="o">=</span> <span class="n">results_to_dataframe</span><span class="p">(</span><span class="n">results_cleaned</span><span class="p">,</span> <span class="s2">&quot;Cleaned Data&quot;</span><span class="p">)</span>
+
+<span class="c1"># Combine both results</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_results_raw</span><span class="p">,</span> <span class="n">df_results_cleaned</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df_results</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;Model&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Melt DataFrame for visualization</span>
+<span class="n">df_melted</span> <span class="o">=</span> <span class="n">df_results</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Model&#39;</span><span class="p">,</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">],</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Metric&#39;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Score&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set plot style</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+
+<span class="c1"># Unique metrics</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MSE&quot;</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;R2&quot;</span><span class="p">,</span> <span class="s2">&quot;Adjusted R2&quot;</span><span class="p">]</span>
+
+<span class="c1"># Iterate through each metric and create a separate figure</span>
+<span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">df_melted</span><span class="p">[</span><span class="n">df_melted</span><span class="p">[</span><span class="s2">&quot;Metric&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">metric</span><span class="p">],</span>
+        <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Model&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Score&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Add titles and labels</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Comparison of </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2"> for Raw vs Cleaned Data&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Model&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dataset&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show the plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_53_0.png" src="_images/thesis_53_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_53_1.png" src="_images/thesis_53_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_53_2.png" src="_images/thesis_53_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/thesis_53_3.png" src="_images/thesis_53_3.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Sphinx_for_thesis</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BootStrapping (Stratified Sampling)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Detecting-Anomolies">Detecting Anomolies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a)-Outlier-Detection-(Z-score-and-IQR-Method)">a) Outlier Detection (Z-score and IQR Method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#b)-Time-Series-Analysis">b) Time Series Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Analysing-in-a-Very-small-sample-of-5000-points">Analysing in a Very small sample of 5000 points</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Analysing-Trends">Analysing Trends</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Above-correlation-matrix-proves-this-is-not-a-Time-Series-data,-hence-we-can-ignore-time-stamps-for-rest-of-our-analysis">Above correlation matrix proves this is not a Time Series data, hence we can ignore time stamps for rest of our analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Pairwise-Relationship">Pairwise Relationship</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#we-can-do-same-on-a-very-small-dataset-of-1000-samples-for-better-visualization">we can do same on a very small dataset of 1000 samples for better visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Histograms">Histograms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Improving-Data-Quality-with-Statistics-&amp;-Machine-Learning-Models">Improving Data Quality with Statistics &amp; Machine Learning Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Outlier-Removal">Outlier Removal</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Z-test">Z-test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#Further-using-Isolation-Forest">Further using Isolation Forest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Modeling-Data-(Voltage-vs-Discharge-capacity)">Modeling Data (Voltage vs Discharge capacity)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#1.-Modeling-Uncleaned-Raw-data-(Produced-by-using-Stratified-Sampling)">1. Modeling Uncleaned Raw data (Produced by using Stratified Sampling)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Machine-Learning-Models-Used-for-Fitting-the-Data">Machine Learning Models Used for Fitting the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Evaluation-Metrics">Evaluation Metrics</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Sphinx_for_thesis documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Temp.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/thesis.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
